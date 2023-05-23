@@ -1,0 +1,56 @@
+{
+	"info": {
+		"_postman_id": "15bb87e5-2948-4524-9e6b-bab0665a60b3",
+		"name": "API-Kubernetes",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13959457",
+		"_collection_link": "https://lively-water-860782.postman.co/workspace/My-Workspace~681ceef4-6f23-45ba-8a6e-afe5e7365bce/collection/13959457-15bb87e5-2948-4524-9e6b-bab0665a60b3?action=share&creator=13959457&source=collection_link"
+	},
+	"item": [
+		{
+			"name": "Load Users",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{hostname}}/user",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add User",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\" : \"Gabriela\",\n    \"lastname\" : \"Anaya Oliva\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{hostname}}/user",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
