@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mock_server_api_pod
+spec:
+  containers:
+    - name: mock_server_api_container
+      image: innovaapps/mock_server_project:latest
+      ports:
+        - containerPort: 3000

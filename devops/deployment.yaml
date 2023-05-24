@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mock-server-api-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: mock-server-api
+  template:
+    metadata:
+      labels:
+        app: mock-server-api
+    spec:
+      containers:
+        - name: mock-server-api-container
+          image: innovadeveloper/mock-server-api:latest
+          ports:
+            - containerPort: 3000
