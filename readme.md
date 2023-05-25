@@ -65,7 +65,6 @@ Ingresar al registry de dockerhub : https://hub.docker.com/ , crearse una cuenta
 ![Repositorio de dockerhub](https://github.com/innovadeveloper/uml_diagrams/blob/master/kubernetes_training/registry-dockerhub.png?raw=true)
 #### (3.2) Construcción de la imagen
 Para la construcción de la imagen corremos la siguiente línea de comando : 
-
 **Sintaxis**
 ```shell
 docker build -t [image-name]:[tag] -f [docker-file] .
@@ -112,8 +111,6 @@ kubectl get pods
 
 #### (4.1) Configurando los namespaces a utilizarse (no mandatorio)
 El namespace de Kubernetes se utiliza para crear un ámbito aislado y lógico dentro de un clúster, lo que permite organizar y gestionar recursos de forma separada. Para la creación del namespace corremos la siguiente línea de comando : 
-
-
 **Sintaxis**
 ```shell
 kubectl create namespace [my-namespace]
@@ -197,23 +194,23 @@ spec:
   replicas: 3
   selector:
     matchLabels:
-      app: my-app
+      app: my-app   # Este selector garantizará al Deployment tener el control de los PODs q tengan el mismo nombre de etiqueta.
   template:
     metadata:
       labels:
-        app: my-app
+        app: my-app     # identificador de los PODs 
     spec:
       volumes:
-        - name: my-volume
+        - name: my-volume   # nombre de volumen q se asociará al PVC y se compartirá a los contenedores q lo invoquen
           persistentVolumeClaim:
-            claimName: my-pvc
+            claimName: my-pvc   # PVC previamente ya creado
       containers:
         - name: my-container
-          image: my-image
+          image: my-image   # imagen alojada en el registry o en alguno de los POD's q se encuentre en ejecución.
           ports:
             - containerPort: my-port
           volumeMounts:
-            - name: my-volume
+            - name: my-volume   # nombre de volumen q se definió en el objeto "spec"
               mountPath: /data/
 ```
 
