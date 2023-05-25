@@ -23,3 +23,9 @@ kubectl describe deployment DEPLOYMENT-NAME
 ## Eliminar el deployment creado
 kubectl delete deployment DEPLOYMENT_NAME
 > kubectl delete deployment mock-server-api-deployment -n mock-server-namespace
+
+## Eliminar el pv
+kubectl delete pv my-pv
+
+## Crear el pvc
+kubectl apply -f devops/pvc.yaml

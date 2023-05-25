@@ -65,6 +65,7 @@ Ingresar al registry de dockerhub : https://hub.docker.com/ , crearse una cuenta
 ![Repositorio de dockerhub](https://github.com/innovadeveloper/uml_diagrams/blob/master/kubernetes_training/registry-dockerhub.png?raw=true)
 #### (3.2) Construcción de la imagen
 Para la construcción de la imagen corremos la siguiente línea de comando : 
+
 **Sintaxis**
 ```shell
 docker build -t [image-name]:[tag] -f [docker-file] .
@@ -111,6 +112,8 @@ kubectl get pods
 
 #### (4.1) Configurando los namespaces a utilizarse (no mandatorio)
 El namespace de Kubernetes se utiliza para crear un ámbito aislado y lógico dentro de un clúster, lo que permite organizar y gestionar recursos de forma separada. Para la creación del namespace corremos la siguiente línea de comando : 
+
+
 **Sintaxis**
 ```shell
 kubectl create namespace [my-namespace]
@@ -123,6 +126,127 @@ kubectl create namespace mock-server-namespace
 # listar los namespace
 kubectl get namespaces
 ```
+#### (4.2) Configurando el PersistentVolume (PV) (no mandatorio)
+A continuación se muestra el fichero pv.yaml
+```yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mock-server-api-pv  # (important) este nombre del PV deberá de coincidir con el PVC más adelante
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: standard
+  hostPath:
+    # path: ./../assets/ # no recomendado utilizar paths relativos por la incompatibilidad con distintos tipos de cluster, además de q kubernetes no permite ".."
+    path: /Users/kennybaltazaralanoca/Projects/NodeProjects/mock-server-project/assets/
+```
+Aplicación del fichero pv.yaml
+```shell
+kubectl apply -f devops/pv.yaml
+```
+Revisión de los PV creados
+```shell
+kubectl get pv
+
+NAME                 CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                         STORAGECLASS   REASON   AGE
+mock-server-api-pv   1Gi        RWO            Retain           Bound    default/mock-server-api-pvc   standard                18m
+```
+#### (4.3) Configurando el PersistentVolumeClaim (PVC) (no mandatorio)
+A continuación se muestra el fichero pvc.yaml
+```yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mock-server-api-pvc # (important) el nombre debe coincidir con el del PV.
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+```
+Aplicación del fichero pvc.yaml
+```shell
+kubectl apply -f devops/pvc.yaml
+```
+Revisión de los PVC creados
+```shell
+kubectl get pvc
+
+NAME                  STATUS   VOLUME               CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+mock-server-api-pvc   Bound    mock-server-api-pv   1Gi        RWO            standard       18m
+```
+**Nota** Es importante tener en cuenta que la asociación entre el PVC y el PV se basa en el nombre. **El PVC y el PV deben tener nombres coincidentes** para establecer la conexión entre ellos.
+
+## (5) Definición de un fichero deployment de kubernetes
+#### (5.1) Definición del fichero deployment
+A continuación se muestra el fichero deployment.yaml
+
+Sintaxis :
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      volumes:
+        - name: my-volume
+          persistentVolumeClaim:
+            claimName: my-pvc
+      containers:
+        - name: my-container
+          image: my-image
+          ports:
+            - containerPort: my-port
+          volumeMounts:
+            - name: my-volume
+              mountPath: /data/
+```
+
+Ejemplo :
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mock-server-api-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: mock-server-api
+  template:
+    metadata:
+      labels:
+        app: mock-server-api
+    spec:
+      volumes:
+        - name: mock-server-api-volume
+          persistentVolumeClaim:
+            claimName: mock-server-api-pvc
+      containers:
+        - name: mock-server-api-container
+          image: innovadeveloper/mock-server-api:latest
+          ports:
+            - containerPort: 3000
+          volumeMounts:
+            - name: mock-server-api-volume
+              mountPath: /data/
+```
+
 
 
 ## License

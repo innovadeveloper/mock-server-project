@@ -3,7 +3,8 @@ const fs = require('fs')
 const express = require('express')
 const app = express()
 const port = 3000
-const filePath = './assets/data.json'
+// const filePath = './assets/data.json'
+const filePath = '/data/data.json'
 
 app.use(express.json()) // Middleware para parsear el cuerpo de la solicitud como JSON
 const writeFile = (filePath, text) => {

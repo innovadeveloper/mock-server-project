@@ -12,8 +12,15 @@ spec:
       labels:
         app: mock-server-api
     spec:
+      volumes:
+        - name: mock-server-api-volume
+          persistentVolumeClaim:
+            claimName: mock-server-api-pvc
       containers:
         - name: mock-server-api-container
           image: innovadeveloper/mock-server-api:latest
           ports:
             - containerPort: 3000
+          volumeMounts:
+            - name: mock-server-api-volume
+              mountPath: /data/
