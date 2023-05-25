@@ -243,7 +243,28 @@ spec:
             - name: mock-server-api-volume
               mountPath: /data/
 ```
+#### (5.2) Aplicación del fichero deployment
+A continuación se muestra la aplicación del fichero deployment.yaml
+```shell
+kubectl apply -f ./devops/deployment.yaml
+```
+Revisión de los deployment creados
+```shell
+kubectl get deployment
 
+NAME                         READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS                  IMAGES                                   SELECTOR
+mock-server-api-deployment   3/3     3            3           45m   mock-server-api-container   innovadeveloper/mock-server-api:latest   app=mock-server-api
+```
+
+Revisión de los pods creados 
+```shell
+kubectl get pods
+
+NAME                                          READY   STATUS    RESTARTS   AGE   IP            NODE       NOMINATED NODE   READINESS GATES
+mock-server-api-deployment-68bf6df6df-7j2t6   1/1     Running   0          45m   10.244.0.40   minikube   <none>           <none>
+mock-server-api-deployment-68bf6df6df-rrhj4   1/1     Running   0          45m   10.244.0.39   minikube   <none>           <none>
+mock-server-api-deployment-68bf6df6df-s94h6   1/1     Running   0          45m   10.244.0.41   minikube   <none>           <none>
+```
 
 
 ## License
