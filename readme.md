@@ -266,6 +266,48 @@ mock-server-api-deployment-68bf6df6df-rrhj4   1/1     Running   0          45m  
 mock-server-api-deployment-68bf6df6df-s94h6   1/1     Running   0          45m   10.244.0.41   minikube   <none>           <none>
 ```
 
+## (6) Gestión de pods y deployments (revisar estado, logs, eliminar)
+Administración de PODs
+| Comando                                        | Descripción                                                          |
+|-----------------------------------------------|----------------------------------------------------------------------|
+| `kubectl get pods`                             | Obtiene una lista de todos los pods en el clúster.                    |
+| `kubectl describe pod <nombre-del-pod>`         | Muestra información detallada sobre un pod específico.                |
+| `kubectl logs <nombre-del-pod>`                 | Muestra los registros (logs) de un pod específico.                    |
+| `kubectl delete pod <nombre-del-pod>`           | Elimina un pod específico del clúster.                                |
+| `kubectl delete pods --all`                     | Elimina todos los pods en el clúster.                                 |
+| `kubectl apply -f <archivo-de-definicion.yaml>` | Crea o actualiza un pod utilizando un archivo de definición YAML.     |
+| `kubectl exec -it <nombre-del-pod> -- <comando>` | Ejecuta un comando en un pod específico de forma interactiva.         |
+| `kubectl port-forward <nombre-del-pod> <puerto>`| Redirige un puerto del pod a un puerto local para acceder al pod.     |
+
+Administración de Deployments
+| Comando                                               | Descripción                                                          |
+|-------------------------------------------------------|----------------------------------------------------------------------|
+| `kubectl get deployments`                              | Obtiene una lista de todos los deployments en el clúster.             |
+| `kubectl describe deployment <nombre-del-deployment>`  | Muestra información detallada sobre un deployment específico.         |
+| `kubectl scale deployment <nombre-del-deployment> ...` | Escala un deployment para aumentar o disminuir el número de réplicas. |
+| `kubectl delete deployment <nombre-del-deployment>`    | Elimina un deployment específico del clúster.                         |
+| `kubectl apply -f <archivo-de-definicion.yaml>`        | Crea o actualiza un deployment utilizando un archivo de definición YAML. |
+| `kubectl rollout status deployment/<nombre-del-deployment>` | Verifica el estado de la implementación en curso de un deployment.  |
+| `kubectl rollout history deployment/<nombre-del-deployment>` | Muestra el historial de implementaciones de un deployment.          |
+| `kubectl rollout undo deployment/<nombre-del-deployment>`   | Revierte a una versión anterior de un deployment.                   |
+
+Administración de Servicios
+| Comando                                               | Descripción                                                          |
+|-------------------------------------------------------|----------------------------------------------------------------------|
+| `kubectl get services`                                  | Obtiene una lista de todos los servicios en el clúster.             |
+| `kubectl describe service <nombre-del-servicio>`        | Muestra información detallada sobre un servicio específico.         |
+| `kubectl delete service <nombre-del-servicio>`          | Elimina un servicio específico del clúster.                         |
+| `kubectl apply -f <archivo-de-definicion.yaml>`         | Crea o actualiza un servicio utilizando un archivo de definición YAML. |
+Administración de PV
+| Comando                                               | Descripción                                                          |
+|-------------------------------------------------------|----------------------------------------------------------------------|
+| `kubectl create -f <archivo-de-definicion.yaml>`         | Crea un nuevo Persistent Volume (PV) utilizando un archivo de definición YAML. |
+| `kubectl get pv`                                  | Obtiene una lista de todos los Persistent Volumes (PV) en el clúster.             |
+| `kubectl describe pv <nombre-del-pv>`        | Muestra información detallada sobre un Persistent Volume (PV) específico.         |
+| `kubectl delete pv <nombre-del-pv>`          | Elimina un Persistent Volume (PV) específico del clúster.                         |
+
+
+
 
 ## License
 
