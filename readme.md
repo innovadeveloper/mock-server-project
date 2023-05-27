@@ -135,6 +135,78 @@ https://<MICROK8S_IP>:10443
 
 ![Dashboard](https://github.com/innovadeveloper/uml_diagrams/blob/master/kubernetes_training/microk8s_dashboard.png?raw=true)
 
+### (4.4) Configurar el Dashboard de microk8s 
+Kubernetes soporta RBAC (Control basado en roles de acceso), esto significa que se podrá definir roles y permisos granulares para diferentes entidades, como usuarios, grupos y servicios.
+
+**Creación de un usario de tipo admin**
+Para este ejemplo de creación de un usario de tipo admin utilizaremos el rol predefinido (cluster-admin) de kubernetes.
+- Definición del service account y cluster role binding
+```yaml
+# example filename: my-user-admin-service-account.yaml
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: my-user-admin # <user-admin-name>
+  # namespace: kubernetes-dashboard
+```
+
+```yaml
+# example filename: my-user-admin.yaml
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: my-user-admin # <user-admin-name>
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin # another cluster roles : view, edit, cluster-admin
+subjects:
+- kind: User
+  name: my-user-admin # <user-admin-name>
+
+```
+- Aplicación de las definiciones service account y cluster role binding.
+
+```shell
+# aplicación de service account
+kubectl apply -f my-user-admin-service-account.yaml  
+
+# aplicación del cluster role binding
+kubectl apply -f my-user-admin.yaml  
+```
+- Extracción del token de un usuario
+```shell
+# seleccionar el nombre de la cuenta de servicio
+kubectl create token <my-user-admin>
+
+eyJhbGciOiJSUz......................................zhHNC10eX
+```
+- Gestión de los service account y cluster role binding
+```shell
+# Listar las cuentas de servicio
+kubectl get ServiceAccount
+
+# Listar las cuenta cluster role binding
+kubectl get ClusterRoleBinding
+
+# Remover un acceso : service-account y cluster role binding
+kubectl delete clusterrolebinding <my-user-admin>
+kubectl delete serviceaccount <my-user-admin>
+
+```
+ 
+Ingresar el token en la web del dashboard 
+
+![Ingresar token](https://github.com/innovadeveloper/uml_diagrams/blob/master/kubernetes_training/kubectl-dashboard-ingress-token.png?raw=true)
+
+Revisando la info del usuario
+ 
+![Info del usuario](https://github.com/innovadeveloper/uml_diagrams/blob/master/kubernetes_training/kubectl-dashboard-user-info.png?raw=true)
+
+ 
+ 
 #### (4.1) Configurando entorno con minikube en un shell de unix o linux
 Encender el cluster. Para este entrenamiento estamos utilizando minikube y si deseamos encender el cluster corremos la siguiente línea : 
 ```shell
