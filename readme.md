@@ -80,6 +80,61 @@ docker push innovadeveloper/mock-server-api:latest
 ```
 
 ## (4) Preparando el entorno de kubernetes (namespaces, pvc, pv)
+#### (4.0) Instalando microK8s ( osx )
+Instalación de [microk8s](https://microk8s.io/docs/install-macos) en osx. Esto instalará una máquina virtual con el sistema operativo ubuntu.
+```shell
+# install microk8s con brew
+brew install ubuntu/microk8s/microk8s
+
+# run the installer
+microk8s install
+
+# check status
+microk8s status --wait-ready
+
+# crear la variable dentro de la sesión del shell
+export kubectl="microk8s kubectl "
+```
+#### (4.1) Configurando entorno (complementos) microK8s ( osx )
+![Repositorio de dockerhub](https://github.com/innovadeveloper/uml_diagrams/blob/master/kubernetes_training/microk8s_status.png?raw=true)
+
+De forma predeterminada, vas a obtener **una versión de Kubernetes básica**. **Los servicios adicionales**, como el panel, el core-dns o el almacenamiento local, se deben habilitar ejecutando el comando microk8s enable:
+
+```shell
+microk8s enable dns dashboard storage
+```
+### (4.2) Descubrir los nodos del cluster y la ip asociado a estos.
+El siguiente comando listará los nodos del cluster y en la columna **NAME** tendremos el hostname de la máquina virtual y la columna **INTERNAL-IP** es la ip a la q podremos apuntar desde fuera del cluster.
+```shell
+kubectl get nodes -o wide
+
+NAME          STATUS   ROLES    AGE    VERSION   INTERNAL-IP    EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION       CONTAINER-RUNTIME
+microk8s-vm   Ready    <none>   175m   v1.26.4   192.168.64.2   <none>        Ubuntu 18.04.6 LTS   4.15.0-211-generic   containerd://1.6.15
+```
+### (4.3) Configurar el Dashboard de microk8s 
+Recuperamos el token de login del dashboard. [(Más info)](https://microk8s.io/docs/addon-dashboard)
+```shell
+multipass exec <MICROK8S_HOSTNAME> -- sudo /snap/bin/microk8s kubectl -n kube-system describe secret $(multipass exec <MICROK8S_HOSTNAME> -- sudo /snap/bin/microk8s kubectl -n kube-system get secret | grep default-token | cut -d " " -f1)
+```
+
+Enseguida se ejecute ese comando, retornará en la shell un token : 
+```shell
+Data
+====
+ca.crt:     1123 bytes
+namespace:  11 bytes
+token:      eyJhbGciOiJSU..................................1OvsQr7eGA
+```
+
+Iniciar el dashboard con el siguiente comando : 
+```shell
+multipass exec <MICROK8S_HOSTNAME> -- sudo /snap/bin/microk8s kubectl port-forward -n kube-system service/kubernetes-dashboard 10443:443 --address 0.0.0.0
+```
+Podremos acceder al dashboard con la siguiente url :
+https://<MICROK8S_IP>:10443
+
+![Dashboard](https://github.com/innovadeveloper/uml_diagrams/blob/master/kubernetes_training/microk8s_dashboard.png?raw=true)
+
 #### (4.1) Configurando entorno con minikube en un shell de unix o linux
 Encender el cluster. Para este entrenamiento estamos utilizando minikube y si deseamos encender el cluster corremos la siguiente línea : 
 ```shell
